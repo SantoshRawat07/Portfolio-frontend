@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 
 // Fallback to localhost if the env var is not set
-const API_URL = import.meta.env.VITE_BACKEND_API_URL;
+const API_URL = import.meta.env.VITE_BACKEND_API_URL || "https://portfolio-chatbot-backend-1-p2qp.onrender.com";
 
 const Avatar = ({ letter = "S", size = 32 }) => (
   <div
