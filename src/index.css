@@ -121,3 +121,8 @@
 @keyframes scroll-left  { 0% { transform: translateX(0); }    100% { transform: translateX(-50%); } }
 @keyframes scroll-right { 0% { transform: translateX(-50%); } 100% { transform: translateX(0); } }
 
+/* @media (min-width: 768px) and (max-width: 1023px) {
+  .name-md-shift {
+    transform: translateX(-16px) !important;
+  }
+} */

@@ -48,14 +48,14 @@ const HeroSection = ({ setShowNavbar }) => {
   const [showTopText, setShowTopText] = useState(true);
   const [rightDone, setRightDone] = useState(false); // ← KEY STATE
 
-  // ── Wheel hijack ──
+  // ── Wheel hijack ── (desktop split-layout only — md now stacks normally)
   useEffect(() => {
     const container = containerRef.current;
     const rightPanel = rightPanelRef.current;
     if (!container || !rightPanel) return;
 
     const onWheel = (e) => {
-      if (window.innerWidth < 768) return;
+      if (window.innerWidth < 1024) return;
 
       const { scrollTop, scrollHeight, clientHeight } = rightPanel;
       const atBottom = scrollTop + clientHeight >= scrollHeight - 2;
@@ -83,7 +83,7 @@ const HeroSection = ({ setShowNavbar }) => {
     return () => container.removeEventListener('wheel', onWheel);
   }, []);
 
-  // ── Touch hijack ──
+  // ── Touch hijack ── (desktop split-layout only — md now stacks normally)
   useEffect(() => {
     const container = containerRef.current;
     const rightPanel = rightPanelRef.current;
@@ -94,7 +94,7 @@ const HeroSection = ({ setShowNavbar }) => {
     const onTouchStart = (e) => { startY = e.touches[0].clientY; };
 
     const onTouchMove = (e) => {
-      if (window.innerWidth < 768) return;
+      if (window.innerWidth < 1024) return;
       const deltaY = startY - e.touches[0].clientY;
       const { scrollTop, scrollHeight, clientHeight } = rightPanel;
       const atBottom = scrollTop + clientHeight >= scrollHeight - 2;
@@ -147,8 +147,8 @@ const handleRightScroll = () => {
   }
   lastScroll.current = scrollTop;
 
-  // Top name text visibility
-  if (topTextRef.current && imageRef.current && window.innerWidth >= 768) {
+  // Top name text visibility (desktop split-layout only)
+  if (topTextRef.current && imageRef.current && window.innerWidth >= 1024) {
     const textBottom = topTextRef.current.getBoundingClientRect().bottom;
     const imageTop = imageRef.current.getBoundingClientRect().top;
     setShowTopText(textBottom > imageTop);
@@ -197,13 +197,13 @@ const handleRightScroll = () => {
   return (
     <> 
     <div
-      className={`flex flex-col md:flex-row md:h-screen md:overflow-hidden bg-white z-10 relative
-  ${rightDone ? 'md:relative' : 'md:sticky md:top-0'}`}
+      className={`flex flex-col lg:flex-row lg:h-screen lg:overflow-hidden bg-white z-10 relative
+  ${rightDone ? 'lg:relative' : 'lg:sticky lg:top-0'}`}
       >
-        {/* ── Left: image ── */}
+        {/* ── Image: visible on mobile, hidden on md (replaced by small avatar below), half-width sticky column on lg (desktop, unchanged) ── */}
 <div
   ref={imageRef}
-  className="w-full md:w-1/2 h-64 md:h-full overflow-hidden bg-white"
+  className="w-full h-64 md:hidden lg:block lg:w-1/2 lg:h-full overflow-hidden bg-white"
 >
   <img
     src={portfolio}
@@ -212,28 +212,28 @@ const handleRightScroll = () => {
   />
 </div>
 
-        {/* ── Right: internal scroll panel ── */}
+        {/* ── Right: stacks below the image on mobile/md, internal scroll panel on lg (desktop, unchanged) ── */}
 <div
   ref={rightPanelRef}
   onScroll={handleRightScroll}
-  className="w-full md:w-[58%] h-auto md:h-full md:overflow-y-auto pl-2 pr-6 md:pl-2 md:pr-10 py-4 md:py-10 space-y-10 bg-white text-black"
+  className="w-full h-auto pl-2 pr-6 py-4 space-y-10 bg-white text-black lg:w-[58%] lg:h-full lg:overflow-y-auto lg:pl-2 lg:pr-10 lg:py-10"
   style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
 >
           {/* Name */}
           <section
-            ref={topTextRef}
-            className={`flex flex-col items-start md:items-center transition-all duration-500 -translate-x-4 ${
-              !showTopText
-                ? 'md:opacity-0 md:pointer-events-none md:select-none md:-translate-y-16'
-                : 'md:opacity-100 md:translate-y-0'
-            }`}
-          >
-            <h1 className="font-bold uppercase mt-4 text-3xl md:text-[160px] leading-none lg:-px-2">
+  ref={topTextRef}
+  className={`flex flex-col items-start lg:items-center transition-all duration-500 -translate-x-4 name-md-shift lg:-translate-x-4 ${
+    !showTopText
+      ? 'lg:opacity-0 lg:pointer-events-none lg:select-none lg:-translate-y-16'
+      : 'lg:opacity-100 lg:translate-y-0'
+  }`}
+>
+            <h1 className="font-bold uppercase mt-4 text-3xl md:text-[160px] leading-none lg:-px-2 ml-4">
               SANTOSH
             </h1>
             <h1
               ref={studioRef}
-              className="font-bold uppercase lg:-mt-2 md:-mt-[90px] text-[24px] md:text-[160px] leading-none"
+              className="font-bold uppercase lg:-mt-2 md:-mt-[90px] text-[24px] md:text-[160px] leading-none ml-4"
             >
               RAWAT
             </h1>
@@ -306,25 +306,10 @@ const handleRightScroll = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3" />
               </svg>
             </button>
-
-            <button
-              ref={btn3Ref}
-              onMouseEnter={() => handleBtnHover(btn3Ref)}
-              onMouseLeave={() => handleBtnLeave(btn3Ref)}
-              onClick={() => { handleBtnClick(btn3Ref); navigate('/letstalk'); }}
-              className="flex items-center gap-2 px-5 py-3 md:px-7 md:py-4 bg-gray-100 text-black
-                text-sm md:text-base font-semibold rounded-full border-2 border-gray-300
-                hover:border-black hover:bg-black hover:text-white transition-colors duration-300 cursor-pointer"
-            >
-              <span>Contact Me</span>
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-              </svg>
-            </button>
           </section>
 
-          {/* About Heading */}
-          <section>
+          {/* About Heading — hidden at md (tablet), visible on mobile and desktop */}
+          <section className="md:hidden lg:block">
             <p
               ref={(el) => (animatedTextRef.current[6] = el)}
               className="text-lg md:text-2xl text-gray-600"
